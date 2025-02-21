@@ -1937,19 +1937,88 @@ export const flashDeals = [
 
 // Adicionar função de loading
 function showLoading(container) {
+    if (!container) return;
+    
     container.innerHTML = `
-        <div class="loading">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="loading-container">
+            <div class="loading">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <p class="loading-text">Carregando produtos...</p>
         </div>
     `;
 }
+
+// Função para mostrar erro de carregamento
+function showLoadingError(container) {
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="loading-error">
+            <p>😕 Ops! Algo deu errado.</p>
+            <button onclick="window.location.reload()" class="reload-btn">
+                Tentar Novamente
+            </button>
+        </div>
+    `;
+}
+
+// Função para renderizar produtos
+window.renderProducts = function(category = 'subscriptions') {
+    const productsContainer = document.getElementById('products');
+    if (!productsContainer) return;
+
+    const filteredProducts = products.filter(product => 
+        category === 'all' ? true : product.category === category
+    );
+
+    if (filteredProducts.length === 0) {
+        productsContainer.innerHTML = `
+            <div class="no-products">
+                <p>Nenhum produto encontrado nesta categoria 😕</p>
+            </div>
+        `;
+        return;
+    }
+
+    productsContainer.innerHTML = filteredProducts.map(product => `
+        <div class="product-card" data-id="${product.id}">
+            <div class="product-emoji">${product.emoji}</div>
+            ${product.highlight ? `<span class="product-highlight">${product.highlight}</span>` : ''}
+            <h3 class="product-title">${product.name}</h3>
+            <p class="product-price">R$ ${product.price.toFixed(2)}</p>
+            ${product.oldPrice ? `<p class="product-old-price">R$ ${product.oldPrice.toFixed(2)}</p>` : ''}
+            <p class="product-description">${product.shortDescription || product.description.split('\n')[0]}</p>
+            <div class="product-stock">Em estoque: ${product.stock}</div>
+            <button class="add-to-cart-btn" data-product-id="${product.id}">
+                Adicionar ao Carrinho 🛒
+            </button>
+        </div>
+    `).join('');
+
+    // Adiciona eventos de clique nos cards
+    const cards = productsContainer.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('add-to-cart-btn')) {
+                const productId = card.dataset.id;
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    openPreviewModal(product);
+                }
+            }
+        });
+    });
+};
 
 // Função para abrir o modal de pré-visualização
 function openPreviewModal(product) {
     const modal = document.getElementById('previewModal');
     const previewBody = document.getElementById('previewBody');
+    
+    if (!modal || !previewBody) return;
     
     modal.classList.add('active');
     
@@ -1959,7 +2028,9 @@ function openPreviewModal(product) {
                 <div class="preview-emoji">${product.emoji}</div>
                 <div class="preview-price-container">
                     <p class="preview-price">R$ ${product.price.toFixed(2)}</p>
+                    ${product.oldPrice ? `<p class="preview-old-price">R$ ${product.oldPrice.toFixed(2)}</p>` : ''}
                 </div>
+                <div class="preview-stock">Em estoque: ${product.stock}</div>
                 <div class="preview-quantity">
                     <button class="quantity-decrease">-</button>
                     <span class="quantity-value">1</span>
@@ -1969,18 +2040,15 @@ function openPreviewModal(product) {
             
             <div class="preview-right">
                 <h2 class="preview-title">${product.name}</h2>
-                
                 <div class="preview-description">
                     ${product.description}
                 </div>
-
                 <div class="preview-benefits">
                     <h4>✨ Benefícios:</h4>
                     <ul>
                         ${product.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
                     </ul>
                 </div>
-
                 <div class="preview-actions">
                     <button class="add-to-cart-btn pulse-animation" data-product-id="${product.id}">
                         Adicionar ao Carrinho 🛒
@@ -1993,84 +2061,42 @@ function openPreviewModal(product) {
     setupQuantityControls(previewBody);
 }
 
-// Separar setup dos controles de quantidade
-function setupQuantityControls(previewBody) {
-    const quantityValue = previewBody.querySelector('.quantity-value');
-    const decreaseBtn = previewBody.querySelector('.quantity-decrease');
-    const increaseBtn = previewBody.querySelector('.quantity-increase');
-    
-    if (decreaseBtn && increaseBtn && quantityValue) {
-        decreaseBtn.addEventListener('click', () => {
-            const currentValue = parseInt(quantityValue.textContent);
-            if (currentValue > 1) {
-                quantityValue.textContent = currentValue - 1;
-            }
+// Função para inicializar produtos com timeout de segurança
+export async function initializeProducts() {
+    const productsContainer = document.getElementById('products');
+    if (!productsContainer) return;
+
+    showLoading(productsContainer);
+
+    try {
+        // Timeout de segurança de 10 segundos
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout')), 10000);
         });
-        
-        increaseBtn.addEventListener('click', () => {
-            const currentValue = parseInt(quantityValue.textContent);
-            quantityValue.textContent = currentValue + 1;
+
+        // Carrega os produtos
+        const loadProductsPromise = new Promise((resolve) => {
+            // Simula um pequeno delay para evitar flash de loading
+            setTimeout(() => {
+                resolve();
+            }, 300);
         });
+
+        // Espera o primeiro a completar
+        await Promise.race([loadProductsPromise, timeoutPromise]);
+
+        // Renderiza os produtos
+        renderProducts('subscriptions');
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        showLoadingError(productsContainer);
     }
 }
 
-// Modificar a função renderProducts para incluir loading
-export function renderProducts(categoryFilter = null) {
-    const productsGrid = document.getElementById('productsGrid');
-    showLoading(productsGrid);
-    
-    setTimeout(() => {
-        productsGrid.innerHTML = '';
-        const filteredProducts = categoryFilter 
-            ? products.filter(product => product.category === categoryFilter)
-            : products;
-        
-        if (filteredProducts.length === 0) {
-            productsGrid.innerHTML = `
-                <div class="no-results">
-                    <p>Nenhum produto encontrado 😕</p>
-                </div>
-            `;
-            return;
-        }
-
-        const fragment = document.createDocumentFragment();
-        
-        filteredProducts.forEach((product, index) => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.style.animation = `fadeIn 0.2s ease-out forwards ${index * 0.05}s`;
-
-            // Sempre mostrar a categoria quando não houver filtro
-            const categoryName = categories.find(cat => cat.id === product.category)?.name || '';
-            const showCategory = !categoryFilter && categoryName;
-            
-            card.innerHTML = `
-                <div class="product-emoji">${product.emoji}</div>
-                ${product.highlight ? `<span class="product-highlight">${product.highlight}</span>` : ''}
-                <h3 class="product-title">
-                    ${product.name}
-                    ${showCategory ? `<span class="product-category">(${categoryName})</span>` : ''}
-                </h3>
-                <p class="product-price">R$ ${product.price.toFixed(2)}</p>
-                <p class="product-description">${product.shortDescription || product.description}</p>
-                <button class="add-to-cart-btn" data-product-id="${product.id}">
-                    Adicionar ao Carrinho 🛒
-                </button>
-            `;
-            
-            card.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('add-to-cart-btn')) {
-                    openPreviewModal(product);
-                }
-            });
-            
-            fragment.appendChild(card);
-        });
-        
-        productsGrid.appendChild(fragment);
-    }, 100);
-}
+// Inicializa quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    initializeProducts().catch(console.error);
+});
 
 // Função para buscar produtos
 export function searchProducts(query) {
