@@ -51,7 +51,14 @@
                 <span>Total:</span>
                 <span id="cartTotal">R$ 0,00</span>
             </div>
-            <button class="checkout-btn" id="checkoutBtn">Finalizar Compra</button>
+            <div class="checkout-options">
+                <button class="checkout-btn whatsapp" id="checkoutWhatsApp">
+                    <i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp
+                </button>
+                <button class="checkout-btn pix" id="checkoutPix">
+                    <i class="fas fa-qrcode"></i> Pagar com PIX
+                </button>
+            </div>
             <button class="close-modal" id="closeModal">&times;</button>
         </div>
     </div>
@@ -67,6 +74,44 @@
                 <!-- Conteúdo será inserido dinamicamente -->
             </div>
         </div>
+    </div>
+
+    <!-- Modal de PIX -->
+    <div class="pix-modal" id="pixModal">
+        <div class="pix-content">
+            <div class="pix-left">
+                <h2>Pagamento via PIX</h2>
+                <div class="pix-value">
+                    <h3>💰 Total do Pedido:</h3>
+                    <span id="pixValue">R$ 0,00</span>
+                </div>
+                <div class="pix-qr">
+                    <img src="qrcodepix.jpg" alt="QR Code PIX">
+                    <button id="copyPixKey" class="copy-pix-btn">
+                        <i class="fas fa-copy"></i> Copiar Chave PIX
+                        <span class="pix-key">24981128510</span>
+                    </button>
+                </div>
+            </div>
+            <div class="pix-right">
+                <div class="pix-instructions">
+                    <h4>📱 Como Pagar:</h4>
+                    <p><i class="fas fa-mobile-alt"></i> Abra o app do seu banco</p>
+                    <p><i class="fas fa-qrcode"></i> Selecione a opção PIX</p>
+                    <p><i class="fas fa-camera"></i> Escaneie o QR Code ou</p>
+                    <p><i class="fas fa-keyboard"></i> Cole a chave PIX: 24981128510</p>
+                    <p><i class="fas fa-money-bill-wave"></i> Digite o valor: <span class="highlight-value">R$ <span id="pixValueCopy">0,00</span></span></p>
+                    <p><i class="fas fa-check-circle"></i> Confirme o pagamento</p>
+                </div>
+                <div class="pix-actions">
+                    <button class="confirm-payment-btn" id="confirmPayment">
+                        <i class="fas fa-check"></i> Já Fiz o Pagamento
+                    </button>
+                    <p class="pix-security">🔒 Pagamento 100% Seguro</p>
+                </div>
+            </div>
+        </div>
+        <button class="close-modal" id="closePixModal">&times;</button>
     </div>
 
     <!-- Toast Notifications -->
