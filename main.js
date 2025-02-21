@@ -8,7 +8,7 @@ let cartItems = [];
 document.addEventListener('DOMContentLoaded', () => {
     // Renderiza categorias e produtos
     renderCategories();
-    renderProducts();
+    renderProducts('netflix'); // Iniciar com categoria Netflix
     
     // Event Listeners
     setupEventListeners();
@@ -303,4 +303,68 @@ function showToast(message, type = 'success') {
         toast.style.animation = 'slideOutToast 0.3s ease-out forwards';
         setTimeout(() => toast.remove(), 300);
     }, 3000);
+}
+
+// Adicionar contador de estoque dinâmico
+function updateStockDisplay(product) {
+    const randomReduction = Math.floor(Math.random() * 3) + 1;
+    const currentStock = Math.max(0, product.stock - randomReduction);
+    
+    return `
+        <div class="stock-info">
+            <div class="stock-status">
+                ${currentStock < 10 ? '🔥 ÚLTIMAS UNIDADES!' : '✨ PRODUTO EM ESTOQUE'}
+            </div>
+            <div class="stock-count">
+                <span class="watching-now">👥 ${Math.floor(Math.random() * 15) + 5} pessoas estão vendo este produto</span>
+                <span class="stock-remaining">📦 Apenas ${currentStock} unidades disponíveis</span>
+            </div>
+            <div class="stock-bar">
+                <div class="stock-progress" style="width: ${(currentStock / product.stock) * 100}%"></div>
+            </div>
+        </div>
+    `;
+}
+
+// Adicionar elementos de confiança ao modal de produto
+function openPreviewModal(product) {
+    // ... código existente ...
+    
+    previewBody.innerHTML = `
+        <div class="preview-header">
+            <div class="preview-badges">
+                <span class="badge bestseller">🏆 MAIS VENDIDO</span>
+                <span class="badge guarantee">✅ GARANTIA DE SATISFAÇÃO</span>
+            </div>
+            ${product.highlight ? `<span class="preview-highlight">${product.highlight}</span>` : ''}
+        </div>
+        
+        // ... resto do HTML ...
+        
+        <div class="preview-trust">
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Compra 100% Segura</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-bolt"></i>
+                <span>Entrega Imediata</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <span>Suporte 24/7</span>
+            </div>
+        </div>
+        
+        ${updateStockDisplay(product)}
+        
+        <div class="social-proof">
+            <div class="rating">
+                ⭐⭐⭐⭐⭐ 4.9 (${Math.floor(Math.random() * 1000) + 500} avaliações)
+            </div>
+            <div class="recent-sales">
+                🔥 ${Math.floor(Math.random() * 50) + 20} pessoas compraram nas últimas 24h
+            </div>
+        </div>
+    `;
 } 

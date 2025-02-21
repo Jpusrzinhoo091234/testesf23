@@ -1,27 +1,23 @@
 export const categories = [
     {
-        id: 'netflix',
-        name: 'Netflix',
-        emoji: '📺'
+        id: 'subscriptions',
+        name: 'Assinaturas',
+        emoji: '📦'
+    },
+    {
+        id: 'blue-locks',
+        name: 'Blue Lock: Rivals',
+        emoji: '⚽',
+        highlight: '🔥 NOVO!'
     }
 ];
 
 export function renderCategories() {
     const categoriesContainer = document.getElementById('categories');
-    
-    // Botão "Todos"
-    const allButton = document.createElement('button');
-    allButton.className = 'category-btn active';
-    allButton.dataset.category = 'all';
-    allButton.innerHTML = '🏪 Todos';
-    categoriesContainer.appendChild(allButton);
-    
-    // Categoria Netflix
-    categories.forEach(category => {
-        const button = document.createElement('button');
-        button.className = 'category-btn';
-        button.dataset.category = category.id;
-        button.innerHTML = `${category.emoji} ${category.name}`;
-        categoriesContainer.appendChild(button);
-    });
+    categoriesContainer.innerHTML = categories.map(category => `
+        <button class="category-btn ${category.id === 'subscriptions' ? 'active' : ''}" data-category="${category.id}">
+            ${category.emoji} ${category.name}
+            ${category.highlight ? `<span class="category-highlight">${category.highlight}</span>` : ''}
+        </button>
+    `).join('');
 } 
