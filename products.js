@@ -166,7 +166,7 @@ const subscriptionProducts = [
         id: 'hbo-netflix-combo',
         name: '🔒 HBO + NETFLIX',
         emoji: '🔒',
-        price: 16.99,
+        price: 16.99 + TAXA_ADICIONAL,
         category: 'subscriptions',
         description: `🔒 Acesso ao HBO e Netflix por 30 dias!
         
@@ -175,7 +175,7 @@ const subscriptionProducts = [
 - Netflix
 
 (4 em estoque)`,
-        shortDescription: 'HBO + Netflix - R$ 16,99',
+        shortDescription: 'HBO + Netflix - R$ ${(16.99 + TAXA_ADICIONAL).toFixed(2)}',
         stock: 4,
         benefits: [
             '📺 Acesso a HBO e Netflix',

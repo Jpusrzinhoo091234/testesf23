@@ -1,6 +1,9 @@
 // Carrinho de compras
 let cart = [];
 
+// Importar a taxa adicional
+import { TAXA_ADICIONAL } from './products.js';
+
 // Função para adicionar produto ao carrinho
 function addToCart(productId, quantity = 1) {
     const product = products.find(p => p.id === productId);
@@ -13,7 +16,7 @@ function addToCart(productId, quantity = 1) {
         cart.push({
             id: product.id,
             name: product.name,
-            price: product.price,
+            price: product.price, // O preço já inclui a taxa
             emoji: product.emoji,
             quantity
         });
