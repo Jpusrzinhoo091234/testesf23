@@ -3,177 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Loja virtual moderna com os melhores produtos">
-    <title>Loja Virtual Moderna</title>
-    
-    <!-- Estilos -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="cart.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>NeoTech Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Loja online com os melhores produtos">
+    <meta name="keywords" content="streaming, games, anime, produtos digitais">
+    <meta name="author" content="Seu Nome">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">
-            <span class="logo-emoji">🛍️</span>
-            <h1>NICE STORE</h1>
-        </div>
-        
-        <div class="search-bar">
-            <input type="text" id="search" placeholder="Buscar produtos...">
-            <button class="search-btn"><i class="fas fa-search"></i></button>
-        </div>
-        
-        <div class="cart-icon" id="cartIcon">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
+    <header>
+        <div class="container">
+            <img src="logo.png" alt="NeoTech Store Logo" class="logo">
+            <h1>NeoTech Store</h1>
+            <div class="header-actions">
+                <button class="suporte-btn" onclick="contatarSuporte()">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12c0 2.17.7 4.19 1.94 5.86L2.87 22l4.14-1.07C8.58 21.63 10.24 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.63 0-3.18-.4-4.53-1.11l-3.17.82.82-3.17C4.4 15.18 4 13.63 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/>
+                        <path d="M12 6.5c-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5 5.5-2.47 5.5-5.5-2.47-5.5-5.5-5.5zm0 9c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                    </svg>
+                    Suporte
+                </button>
+                <div class="cart-icon" onclick="toggleCarrinho()">
+                    <span id="cart-count">0</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Categorias -->
-    <section class="categories" id="categories">
-        <!-- Categorias serão inseridas dinamicamente -->
-    </section>
+    <main class="container">
+        <div class="search-container">
+            <input 
+                type="text" 
+                placeholder="Buscar produtos..." 
+                class="search-input"
+                oninput="pesquisarProdutos(this.value)"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
 
-    <!-- Produtos -->
-    <div id="products" class="products-grid">
-        <!-- Produtos serão carregados aqui -->
-    </div>
+        <div class="categorias-wrapper">
+            <button class="categoria-nav categoria-nav-left" onclick="rolarCategorias('left')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <section class="categorias">
+                <button class="categoria-btn ativo" data-categoria="todos">ver tudo</button>
+                <button class="categoria-btn" data-categoria="streaming">streaming</button>
+                <button class="categoria-btn" data-categoria="freefire">free fire</button>
+                <button class="categoria-btn" data-categoria="animefighters">anime fighters</button>
+            </section>
+            <button class="categoria-nav categoria-nav-right" onclick="rolarCategorias('right')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </div>
 
-    <!-- Modal do Carrinho -->
-    <div class="cart-modal" id="cartModal">
-        <div class="cart-content">
-            <h2>Seu Carrinho 🛒</h2>
-            <div class="cart-items" id="cartItems">
-                <!-- Itens do carrinho serão inseridos dinamicamente -->
+        <div class="produtos-grid" id="produtos-container">
+            <!-- Produtos serão inseridos aqui via JavaScript -->
+        </div>
+    </main>
+
+    <div id="carrinho-modal" class="carrinho-modal">
+        <div class="carrinho-content">
+            <div class="carrinho-header">
+                <h2>Carrinho</h2>
+                <button onclick="toggleCarrinho()" class="btn-fechar">×</button>
             </div>
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotal">R$ 0,00</span>
-            </div>
-            <div class="checkout-options">
-                <button class="checkout-btn whatsapp" id="checkoutWhatsApp">
-                    <i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp
-                </button>
-                <button class="checkout-btn pix" id="checkoutPix">
-                    <i class="fas fa-qrcode"></i> Pagar com PIX
-                </button>
-            </div>
-            <button class="close-modal" id="closeModal">&times;</button>
+            <div id="carrinho-items"></div>
+            <div id="carrinho-total">Total: R$ 0,00</div>
+            <button onclick="finalizarCompra()" class="btn-finalizar">Finalizar Compra</button>
         </div>
     </div>
 
-    <!-- Modal de Pré-visualização do Produto -->
-    <div class="preview-modal" id="previewModal">
-        <div class="preview-content">
-            <div class="preview-header">
-                <h2>Detalhes do Produto</h2>
-                <button class="close-modal" id="closePreviewModal">&times;</button>
-            </div>
-            <div class="preview-body" id="previewBody">
-                <!-- Conteúdo será inserido dinamicamente -->
-            </div>
-        </div>
-    </div>
+    <div id="notificacao" class="notificacao"></div>
 
-    <!-- Modal de PIX -->
-    <div class="pix-modal" id="pixModal">
-        <div class="pix-content">
-            <div class="pix-left">
-                <h2>Pagamento via PIX</h2>
-                <div class="pix-value">
-                    <h3>💰 Total do Pedido:</h3>
-                    <span id="pixValue">R$ 0,00</span>
-                </div>
-                <div class="pix-qr">
-                    <img src="qrcodepix.jpg" alt="QR Code PIX">
-                    <button id="copyPixKey" class="copy-pix-btn">
-                        <i class="fas fa-copy"></i> Copiar Chave PIX
-                        <span class="pix-key">24981128510</span>
-                    </button>
-                </div>
-            </div>
-            <div class="pix-right">
-                <div class="pix-instructions">
-                    <h4>📱 Como Pagar:</h4>
-                    <p><i class="fas fa-mobile-alt"></i> Abra o app do seu banco</p>
-                    <p><i class="fas fa-qrcode"></i> Selecione a opção PIX</p>
-                    <p><i class="fas fa-camera"></i> Escaneie o QR Code ou</p>
-                    <p><i class="fas fa-keyboard"></i> Cole a chave PIX: 24981128510</p>
-                    <p><i class="fas fa-money-bill-wave"></i> Digite o valor: <span class="highlight-value">R$ <span id="pixValueCopy">0,00</span></span></p>
-                    <p><i class="fas fa-check-circle"></i> Confirme o pagamento</p>
-                </div>
-                <div class="pix-actions">
-                    <button class="confirm-payment-btn" id="confirmPayment">
-                        <i class="fas fa-check"></i> Já Fiz o Pagamento
-                    </button>
-                    <p class="pix-security">🔒 Pagamento 100% Seguro</p>
-                </div>
-            </div>
-        </div>
-        <button class="close-modal" id="closePixModal">&times;</button>
-    </div>
-
-    <!-- Toast Notifications -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-wave"></div>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>📞 Fale Conosco</h3>
-                <div class="contact-links">
-                    <a href="https://wa.me/123456789" target="_blank" class="contact-btn">
-                        <i class="fab fa-whatsapp"></i> Chama no WhatsApp
-                    </a>
-                    <a href="https://t.me/loja" target="_blank" class="contact-btn">
-                        <i class="fab fa-telegram"></i> Fala no Telegram
-                    </a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>💰 Pagamentos</h3>
-                <div class="payment-methods">
-                    <div class="payment-method">
-                        <i class="fas fa-qrcode"></i>
-                        <span>Pagamento via PIX</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>🌟 Benefícios</h3>
-                <div class="features">
-                    <div class="feature">
-                        <span class="feature-icon">⭐</span>
-                        <span>+10.000 Clientes Satisfeitos</span>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon">🏆</span>
-                        <span>Loja Mais Bem Avaliada</span>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon">💖</span>
-                        <span>Clientes Apaixonados</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>© 2024 NICE STORE - Feito com 💖 para você!</p>
-            <div class="social-links">
-                <a href="#" class="social-btn">📸 Instagram</a>
-                <a href="#" class="social-btn">📱 TikTok</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script type="module" src="products.js"></script>
-    <script type="module" src="categories.js"></script>
-    <script type="module" src="cart.js"></script>
+    <script src="produtos.js"></script>
+    <script src="categorias.js"></script>
+    <script src="script.js"></script>
 </body>
 </html> 
